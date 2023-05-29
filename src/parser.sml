@@ -29,9 +29,11 @@ structure Parser :> PARSER = struct
 
   (* Strings *)
   val stringChar = or (seqR (pchar #"\\") (pchar #"\"")) (noneOf [#"\""])
-  val quotedString = pmap String.implode (between (pchar #"\"") (many stringChar) (pchar #"\""))
+  val quotedString = pmap (CST.StringConstant o CST.escapeString o String.implode) (between (pchar #"\"") (many stringChar) (pchar #"\""))
 
   (* Symbols *)
   val symbolChar = anyOfString Ident.alphabet
   val symbolNameParser = pmap String.implode (many1 symbolChar)
+  val unqualifiedSymbolParser = symbolNameParser
+  val keywordParser = (seqR (pchar #":") symbolNameParser)
 end
