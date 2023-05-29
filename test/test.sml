@@ -41,7 +41,7 @@ structure GorgeTest = struct
           isParse "test:test" (QualifiedSymbol (Symbol.mkSymbol (i "test", i "test")))
         ],
         suite "Unqualified Symbols" [
-          isParse "test" (UnqualifiedSymbol (i "test"))
+          isParse "test" (unsym "test")
         ],
         suite "Keywords" [
           isParse ":test" (Keyword (i "test"))
@@ -52,18 +52,18 @@ structure GorgeTest = struct
         isParse "(())" (List [List nil]),
         isParse "((()))" (List [List [List nil]]),
         isParse "(((())))" (List [List [List [List nil]]]),
-        isParse "(test)" (List [UnqualifiedSymbol (i "test")]),
-        isParse "((a))" (List [List [UnqualifiedSymbol (i "a")]]),
-        isParse "(a b c)" (List [UnqualifiedSymbol (i "a"), UnqualifiedSymbol (i "b"), UnqualifiedSymbol (i "c")]),
+        isParse "(test)" (List [unsym "test"]),
+        isParse "((a))" (List [List [unsym "a"]]),
+        isParse "(a b c)" (List [unsym "a", unsym "b", unsym "c"]),
         isParse "(a b (c d) e f)" (List [
-          UnqualifiedSymbol (i "a"),
-          UnqualifiedSymbol (i "b"),
+          unsym "a",
+          unsym "b",
           List [
-            UnqualifiedSymbol (i "c"),
-            UnqualifiedSymbol (i "d")
+            unsym "c",
+            unsym "d"
           ],
-          UnqualifiedSymbol (i "e"),
-          UnqualifiedSymbol (i "f")
+          unsym "e",
+          unsym "f"
         ]),
         isParse "(123)" (List [IntConstant 123]),
         isParse "(\"test\")" (List [StringConstant (escapeString "test")])
