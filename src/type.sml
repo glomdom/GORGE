@@ -4,8 +4,11 @@ structure Type :> TYPE = struct
 
   datatype gtypespec = Unit
                      | Bool
+                     | Integer of signedness * width
                      | Name of Symbol.symbol
                      | TypeCons of Symbol.symbol * (gtypespec list)
+       and signedness = Unsigned | Signed
+       and width = Int8 | Int16 | Int32 | Int64
 
   datatype typedef = TypeAlias of param list * gtypespec
                    | DataType of param list * gtypespec
