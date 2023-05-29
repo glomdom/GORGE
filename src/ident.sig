@@ -3,6 +3,6 @@ signature IDENT = sig
 
   val alphabet: string
 
-  val mk_ident: string -> ident option
-  val ident_string: ident -> string
+  val mkIdent: string -> ident option
+  val identString: ident -> string
 end

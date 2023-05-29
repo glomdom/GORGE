@@ -10,7 +10,7 @@ structure Ident :> IDENT = struct
       alpha ^ alphaup ^ num ^ num
     end
 
-  fun mk_ident s =
+  fun mkIdent s =
     let val sigma = explode alphabet
     in
       if (List.all(fn c => Util.member c sigma)(explode s)) then
@@ -19,5 +19,5 @@ structure Ident :> IDENT = struct
         NONE
     end
 
-  fun ident_string(Identifier s) = s
+  fun identString(Identifier s) = s
 end
