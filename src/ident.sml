@@ -1,4 +1,4 @@
-structure Ident :> IDENT = struct
+structure Ident : IDENT = struct
   datatype ident = Identifier of string
 
   val alphabet =

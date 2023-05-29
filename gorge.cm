@@ -1,11 +1,18 @@
 Group
 is
-    src/util.sig
-    src/util.sml
+  src/util.sig
+  src/util.sml
 
-    src/ident.sig
-    src/ident.sml
+  src/set.sig
+  src/set.sml
 
-    src/module.sig
+  src/map.sig
+  src/map.sml
 
-    $/basis.cm
+  src/ident.sig
+  src/ident.sml
+
+  src/module.sig
+  src/module.sml
+
+  $/basis.cm
