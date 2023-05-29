@@ -35,5 +35,6 @@ structure Parser :> PARSER = struct
   val symbolChar = anyOfString Ident.alphabet
   val symbolNameParser = pmap (Ident.mkIdentEx o String.implode) (many1 symbolChar)
   val unqualifiedSymbolParser = pmap CST.UnqualifiedSymbol symbolNameParser
+  val qualifiedSymbolParser = pmap (CST.QualifiedSymbol o Symbol.mkSymbol) (seq symbolNameParser (seqR (pchar #":") symbolNameParser))
   val keywordParser = pmap CST.Keyword (seqR (pchar #":") symbolNameParser)
 end
