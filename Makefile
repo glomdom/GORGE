@@ -9,3 +9,6 @@ all: compile
 
 compile: $(SRC)
 	$(SML) $(SMLFLAGS) -m $(CM_FILES)
+
+clean:
+	rm -rf src/.cm/
