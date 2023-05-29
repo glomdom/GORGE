@@ -32,8 +32,8 @@ structure GorgeTest = struct
         isParse "-10000" (IntConstant ~10000)
       ],
       suite "Strings" [
-        isParse "\"derp\"" (StringConstant (escapeString "derp")),
-        isParse "\"derp \\\"herp\\\" derp\"" (StringConstant (escapeString "derp \"herp\" derp"))
+        isParse "\"test\"" (StringConstant (escapeString "test")),
+        isParse "\"test \\\"herp\\\" test\"" (StringConstant (escapeString "test \"herp\" test"))
       ],
       suite "Symbols" [
         suite "Qualified Symbols" [
@@ -66,7 +66,15 @@ structure GorgeTest = struct
           unsym "f"
         ]),
         isParse "(123)" (List [IntConstant 123]),
-        isParse "(\"test\")" (List [StringConstant (escapeString "test")])
+        isParse "(\"test\")" (List [StringConstant (escapeString "test")]),
+
+        suite "Whitespace Handling" [
+          isParse "   ()" (List nil),
+          isParse "()   " (List nil),
+          isParse "(   test)" (List [unsym "test"]),
+          isParse "(test   )" (List [unsym "test"]),
+          isParse "(   test   )" (List [unsym "test"])
+        ]
       ]
     ]
   end
