@@ -4,6 +4,7 @@ structure Symbol : SYMBOL = struct
 
   datatype symbol = Symbol of Ident.ident * Ident.ident
 
+  fun mkSymbol p = Symbol p
   fun symbolModuleName (Symbol (m, _)) = m
   fun symbolName (Symbol (_, n)) = n
 end
