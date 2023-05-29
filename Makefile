@@ -13,21 +13,30 @@ SRC := src/*.sig src/*.sml
 TEST_SRC := test/*.sml
 
 VENDOR_DIR := vendor
+
 MLUNIT := $(VENDOR_DIR)/mlunit
 MLUNIT_URL := https://github.com/eudoxia0/mlunit.git
+
+PARSIMONY := $(VENDOR_DIR)/parsimony
+PARSIMONY_URL := https://github.com/eudoxia0/parsimony.git
 
 all: compile
 
 $(VENDOR_DIR):
 	mkdir -p $(VENDOR_DIR)
 
-$(MLUNIT): $(VENDOR_DIR)
-	git clone $(MLUNIT_URL) $(MLUNIT) >/dev/null 2>&1 
+$(PARSIMONY): $(VENDOR_DIR)
+	@[ -d "$(VENDOR_DIR)/parsimony/" ] || echo "cloning parsimony" || git clone $(PARSIMONY_URL) $(PARSIMONY) >/dev/null 2>&1
 
-compile: $(SRC)
+$(MLUNIT): $(VENDOR_DIR)
+	@[ -d "$(VENDOR_DIR)/mlunit/" ] || echo "cloning mlunit" || git clone $(MLUNIT_URL) $(MLUNIT) >/dev/null 2>&1
+
+deps: $(PARSIMONY) $(MLUNIT)
+
+compile: $(SRC) deps
 	$(SML) $(SMLFLAGS) -m $(CM_FILE)
 
-$(TEST_BIN): $(SRC) $(TEST_SRC) $(MLUNIT)
+$(TEST_BIN): $(SRC) $(TEST_SRC) deps
 	$(MLTON) $(MLB_TEST_FILE)
 	./$(TEST_BIN)
 
