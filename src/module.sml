@@ -14,7 +14,7 @@ structure Module :> MODULE = struct
   fun moduleExports (Module (_, _, _, Exports e)) = e
   fun moduleImports (Module (_, _, Imports i, _)) = i
 
-  fun resolveNicknames (m: module) (n: module_name) =
+  fun resolveNickname (m: module) (n: module_name) =
     case Map.get (moduleNicknames m) n of
         SOME n => n
       | NONE => n
