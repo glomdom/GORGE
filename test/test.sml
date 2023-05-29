@@ -16,6 +16,13 @@ structure GorgeTest = struct
 
   val i = Ident.mkIdentEx
 
+  fun isNotParse input =
+    is (fn () => case (Parser.parseString input) of
+        (Util.Result _) => Fail "parse successful, but must fail"
+      | _ => Pass)
+
+    input
+
   fun unsym s = CST.UnqualifiedSymbol (i s)
   fun qsym m s = CST.QualifiedSymbol (Symbol.mkSymbol (i m, i s))
 
@@ -32,18 +39,22 @@ structure GorgeTest = struct
         isParse "+10000" (IntConstant 10000),
         isParse "-10000" (IntConstant ~10000)
       ],
+
       suite "Strings" [
         isParse "\"test\"" (StringConstant (escapeString "test")),
         isParse "\"test \\\"herp\\\" test\"" (StringConstant (escapeString "test \"herp\" test"))
       ],
+
       suite "Symbols" [
         suite "Qualified Symbols" [
           isParse "a:b" (qsym "a" "b"),
           isParse "test:test" (qsym "test" "test")
         ],
+
         suite "Unqualified Symbols" [
           isParse "test" (unsym "test")
         ],
+
         suite "Keywords" [
           isParse ":test" (Keyword (i "test"))
         ]
@@ -56,6 +67,7 @@ structure GorgeTest = struct
         isParse "(test)" (List [unsym "test"]),
         isParse "((a))" (List [List [unsym "a"]]),
         isParse "(a b c)" (List [unsym "a", unsym "b", unsym "c"]),
+        isParse "(m:a n:b o:c)" (List [qsym "m" "a", qsym "n" "b", qsym "o" "c"]),
         isParse "(a b (c d) e f)" (List [
           unsym "a",
           unsym "b",
@@ -76,6 +88,11 @@ structure GorgeTest = struct
           isParse "(test   )" (List [unsym "test"]),
           isParse "(   test   )" (List [unsym "test"]),
           isParse "( a b c )" (List [unsym "a", unsym "b", unsym "c"])
+        ],
+
+        suite "Bad Forms" [
+          isNotParse "(",
+          isNotParse ")"
         ]
       ]
     ]

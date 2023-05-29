@@ -4,4 +4,7 @@ structure RCST :> RCST = struct
                 | Symbol of Symbol.symbol
                 | Keyword of Module.symbol_name
                 | List of rcst list
+
+  fun resolve _ _ (CST.IntConstant i) = IntConstant
+    | resolve _ _ _ = raise Fail "NOT IMPLEMENTED"
 end
