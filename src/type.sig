@@ -1,3 +1,3 @@
 signature TYPE = sig
-  type tenv
+  type param
 end
