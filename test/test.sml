@@ -16,6 +16,8 @@ structure GorgeTest = struct
 
   val i = Ident.mkIdentEx
 
+  fun unsym s = CST.UnqualifiedSymbol (i s)
+
   (* Test Suites *)
   local
     open CST
@@ -50,7 +52,7 @@ structure GorgeTest = struct
         isParse "(())" (List [List nil]),
         isParse "((()))" (List [List [List nil]]),
         isParse "(((())))" (List [List [List [List nil]]]),
-        isParse "(derp)" (List [UnqualifiedSymbol (i "derp")]),
+        isParse "(test)" (List [UnqualifiedSymbol (i "test")]),
         isParse "((a))" (List [List [UnqualifiedSymbol (i "a")]]),
         isParse "(a b c)" (List [UnqualifiedSymbol (i "a"), UnqualifiedSymbol (i "b"), UnqualifiedSymbol (i "c")]),
         isParse "(a b (c d) e f)" (List [
@@ -64,7 +66,7 @@ structure GorgeTest = struct
           UnqualifiedSymbol (i "f")
         ]),
         isParse "(123)" (List [IntConstant 123]),
-        isParse "(\"derp\")" (List [StringConstant (escapeString "derp")])
+        isParse "(\"test\")" (List [StringConstant (escapeString "test")])
       ]
     ]
   end
