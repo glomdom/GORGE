@@ -14,6 +14,13 @@ structure GorgeTest = struct
 
     input
 
+  fun isFailure value msg =
+    is (fn () => case value of
+        (Util.Result v) => Fail "value is an instance of Util.Result"
+      | Util.Failure _ => Pass)
+    
+    msg
+
   val i = Ident.mkIdentEx
 
   fun isNotParse input =
@@ -98,8 +105,43 @@ structure GorgeTest = struct
     ]
   end
 
+  fun rqsym m s = RCST.Symbol (Symbol.mkSymbol (i m, i s))
+
+  local
+    open Module
+    open Map
+  in
+    val moduleSuite =
+      let val a = Module (i "A", empty, Imports empty, Exports (Set.add Set.empty (i "test")))
+          and b = Module (i "B", iadd empty (i "nick", i "A"), Imports empty, Exports Set.empty)
+          and c = Module (i "C", empty, Imports (iadd empty (i "test", i "A")), Exports Set.empty)
+
+      in
+        let val menv = addModule (addModule (addModule emptyEnv a) b) c
+
+        in
+          suite "Module System" [
+            isEqual (moduleName a) (i "A") "Module Name",
+            isEqual (moduleName b) (i "B") "Module Name",
+            isEqual (moduleName c) (i "C") "Module Name",
+
+            suite "Symbol Resolution" [
+              isEqual (RCST.resolve menv b (CST.IntConstant 10)) (Util.Result (RCST.IntConstant 10)) "Int Constant",
+              isEqual (RCST.resolve menv b (CST.UnqualifiedSymbol (i "test"))) (Util.Result (rqsym "B" "test")) "Unqualified Symbol - Internal",
+              isEqual (RCST.resolve menv b (qsym "nick" "test")) (Util.Result (rqsym "A" "test")) "Qualified Symbol - Nickname - Exported",
+              isEqual (RCST.resolve menv b (qsym "A" "test")) (Util.Result (rqsym "A" "test")) "Qualified Symbol - Literal - Not Exported",
+              isFailure (RCST.resolve menv b (qsym "nick" "test1")) "Qualified Symbol - Nickname - Not Exported",
+              isFailure (RCST.resolve menv b (qsym "A" "test1")) "Qualified Symbol - Literal - Not Exported",
+              isEqual (RCST.resolve menv c (CST.UnqualifiedSymbol (i "test"))) (Util.Result (rqsym "A" "test")) "Unqualified Symbol - Imported"
+            ]
+          ]
+        end
+      end
+  end
+
   val tests = suite "Gorge Tests" [
-    parserSuite
+    parserSuite,
+    moduleSuite
   ]
 
   fun runTests () = runAndQuit tests defaultReporter
