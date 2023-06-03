@@ -69,4 +69,15 @@ structure Parser :> PARSER = struct
     case (run sexpParser (ParsimonyStringInput.fromString s)) of
         (Success (r, _)) => Util.Result r
       | f => Util.Failure ("bad parse - " ^ (explain f))
+  
+  fun parseFile path =
+    let val code = "(" ^ (Util.readFileToString path) ^ ")"
+
+    in
+      case (parseString code) of
+          (Util.Result v) => (case v of
+              (CST.List l) => Util.Result l
+            | _ => Util.Failure "compiler error while parsing file")
+        | (Util.Failure f) => Util.Failure f
+    end
 end
