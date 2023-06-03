@@ -1,11 +1,13 @@
 structure RCST :> RCST = struct
   datatype rcst = IntConstant of string
+                | FloatConstant of string
                 | StringConstant of CST.escaped_string
                 | Symbol of Symbol.symbol
                 | Keyword of Symbol.symbol_name
                 | List of rcst list
 
   fun innResolve _ _ (CST.IntConstant i) = IntConstant i
+    | innResolve _ _ (CST.FloatConstant f) = FloatConstant f
     | innResolve _ _ (CST.StringConstant es) = StringConstant es
     | innResolve menv m (CST.QualifiedSymbol s) = resolveQualified menv m (Symbol.symbolModuleName s) (Symbol.symbolName s)
     | innResolve menv m (CST.UnqualifiedSymbol s) = resolveUnqualified menv m s
@@ -17,7 +19,7 @@ structure RCST :> RCST = struct
     in
       case (Module.envGet menv truename) of
           SOME formod => if Module.doesModuleExport formod sn then Symbol (Symbol.mkSymbol (Module.moduleName formod, sn)) else raise Fail ("module `" ^ (Ident.identString truename) ^ "` does not export symbol `" ^ (Ident.identString sn) ^ "`")
-                           
+
         | NONE => raise Fail ("no module name `" ^ (Ident.identString truename) ^ "`")
     end
 
