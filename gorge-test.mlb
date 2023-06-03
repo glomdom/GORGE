@@ -1,5 +1,0 @@
-$(SML_LIB)/basis/basis.mlb
-vendor/mlunit/mlunit.mlb
-
-gorge.mlb
-test/test.sml

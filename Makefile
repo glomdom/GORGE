@@ -6,7 +6,7 @@ MLTON := mlton
 CM_FILE := gorge.cm
 MLB_FILE := gorge.mlb
 
-MLB_TEST_FILE := gorge-test.mlb
+CM_TEST_FILE := gorge-test.cm
 TEST_BIN := gorge-test
 
 SRC := src/*.sig src/*.sml
@@ -39,9 +39,9 @@ compile: $(SRC) $(DEPS)
 	$(SML) $(SMLFLAGS) -m $(CM_FILE)
 
 $(TEST_BIN): $(SRC) $(TEST_SRC) $(DEPS)
-	$(MLTON) $(MLB_TEST_FILE)
-	./$(TEST_BIN)
+	$(SML) $(SMLFLAGS) -m $(CM_TEST_FILE)
 
+.PHONY: test
 test: $(TEST_BIN)
 
 clean:

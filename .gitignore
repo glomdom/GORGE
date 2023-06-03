@@ -1,4 +1,5 @@
 /src/.cm/
+/test/.cm/
 vendor/
 
 gorge-test

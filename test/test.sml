@@ -48,7 +48,14 @@ structure GorgeTest = struct
       ],
 
       suite "Floats" [
-        isParse "0.0" (FloatConstant "0.0")
+        isParse "0.0" (FloatConstant "0.0"),
+        isParse "-0.0" (FloatConstant "-0.0"),
+        isParse "123.0" (FloatConstant "123.0"),
+        isParse "-123.0" (FloatConstant "-123.0"),
+        isParse "123.456" (FloatConstant "123.456"),
+        isParse "-123.456" (FloatConstant "-123.456"),
+        isParse "123.456e3" (FloatConstant "123.456e3"),
+        isParse "-123.456e3" (FloatConstant "-123.456e3")
       ],
 
       suite "Strings" [
