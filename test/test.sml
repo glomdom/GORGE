@@ -18,7 +18,7 @@ structure GorgeTest = struct
     is (fn () => case value of
         (Util.Result v) => Fail "value is an instance of Util.Result"
       | Util.Failure _ => Pass)
-    
+
     msg
 
   val i = Ident.mkIdentEx
@@ -47,6 +47,10 @@ structure GorgeTest = struct
         isParse "-10000" (IntConstant "-10000")
       ],
 
+      suite "Floats" [
+        isParse "0.0" (FloatConstant "0.0")
+      ],
+
       suite "Strings" [
         isParse "\"test\"" (StringConstant (escapeString "test")),
         isParse "\"test \\\"herp\\\" test\"" (StringConstant (escapeString "test \"herp\" test"))
@@ -66,6 +70,7 @@ structure GorgeTest = struct
           isParse ":test" (Keyword (i "test"))
         ]
       ],
+
       suite "S-Expressions" [
         isParse "()" (List nil),
         isParse "(())" (List [List nil]),

@@ -19,7 +19,23 @@ structure Parser :> PARSER = struct
   fun applySign (Positive, int) = int
     | applySign (Negative, int) = "-" ^ int
 
-  val integerParser = pmap (CST.IntConstant o applySign) (seq signParser naturalParser)
+  val integerTextParser = pmap applySign (seq signParser naturalParser)
+  val integerParser = pmap CST.IntConstant integerTextParser
+
+  (* Floats *)
+  val eParser = or (pchar #"e") (pchar #"E")
+  val exponentParser = seqR eParser integerTextParser
+
+  fun toFloat (intPart, (decPart, exponent)) =
+    let val expStr = case exponent of
+        SOME e => "e" ^ e
+      | NONE => ""
+
+    in
+      intPart ^ "." ^ decPart ^ expStr
+    end
+
+  val floatParser = pmap (CST.FloatConstant o toFloat) (seq integerTextParser (seqR (pchar #".") (seq integerTextParser (opt exponentParser))))
 
   (* Strings *)
   val stringChar = or (seqR (pchar #"\\") (pchar #"\"")) (noneOf [#"\""])
@@ -40,8 +56,9 @@ structure Parser :> PARSER = struct
   val ws = many whitespaceParser
 
   fun defineSexpParser listParser = seqR ws (choice [
-    integerParser, quotedString, qualifiedSymbolParser,
-    keywordParser, unqualifiedSymbolParser, listParser
+    floatParser, integerParser, quotedString,
+    qualifiedSymbolParser, keywordParser, unqualifiedSymbolParser,
+    listParser
   ])
 
   val listParser =
@@ -66,7 +83,7 @@ structure Parser :> PARSER = struct
       case (run sexpParser (ParsimonyStringInput.fromString s)) of
           (Success (r, _)) => Result r
         | f => Failure ("bad parse: " ^ (explain f))
-    
+
     fun parseFile path =
       let val code = "(" ^ (readFileToString path) ^ ")"
 
