@@ -85,7 +85,7 @@ structure GorgeTest = struct
           unsym "e",
           unsym "f"
         ]),
-        isParse "(123)" (List [IntConstant "+123"]),
+        isParse "(123)" (List [IntConstant "123"]),
         isParse "(\"test\")" (List [StringConstant (escapeString "test")]),
 
         suite "Whitespace Handling" [
