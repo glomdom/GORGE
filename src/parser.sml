@@ -16,7 +16,7 @@ structure Parser :> PARSER = struct
       or negParser posParser
     end
 
-  fun applySign (Positive, int) = "+" ^ int
+  fun applySign (Positive, int) = int
     | applySign (Negative, int) = "-" ^ int
 
   val integerParser = pmap (CST.IntConstant o applySign) (seq signParser naturalParser)

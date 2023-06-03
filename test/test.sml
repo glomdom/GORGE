@@ -39,12 +39,12 @@ structure GorgeTest = struct
   in
     val parserSuite = suite "Parser" [
       suite "Integers" [
-        isParse "123" (IntConstant 123),
-        isParse "0" (IntConstant 0),
-        isParse "00" (IntConstant 0),
-        isParse "10000" (IntConstant 10000),
-        isParse "+10000" (IntConstant 10000),
-        isParse "-10000" (IntConstant ~10000)
+        isParse "123" (IntConstant "123"),
+        isParse "0" (IntConstant "0"),
+        isParse "00" (IntConstant "00"),
+        isParse "10000" (IntConstant "10000"),
+        isParse "10000" (IntConstant "10000"),
+        isParse "-10000" (IntConstant "-10000")
       ],
 
       suite "Strings" [
@@ -85,7 +85,7 @@ structure GorgeTest = struct
           unsym "e",
           unsym "f"
         ]),
-        isParse "(123)" (List [IntConstant 123]),
+        isParse "(123)" (List [IntConstant "+123"]),
         isParse "(\"test\")" (List [StringConstant (escapeString "test")]),
 
         suite "Whitespace Handling" [
@@ -126,7 +126,7 @@ structure GorgeTest = struct
             isEqual (moduleName c) (i "C") "Module Name",
 
             suite "Symbol Resolution" [
-              isEqual (RCST.resolve menv b (CST.IntConstant 10)) (Util.Result (RCST.IntConstant 10)) "Int Constant",
+              isEqual (RCST.resolve menv b (CST.IntConstant "+10")) (Util.Result (RCST.IntConstant "+10")) "Int Constant",
               isEqual (RCST.resolve menv b (CST.UnqualifiedSymbol (i "test"))) (Util.Result (rqsym "B" "test")) "Unqualified Symbol - Internal",
               isEqual (RCST.resolve menv b (qsym "nick" "test")) (Util.Result (rqsym "A" "test")) "Qualified Symbol - Nickname - Exported",
               isEqual (RCST.resolve menv b (qsym "A" "test")) (Util.Result (rqsym "A" "test")) "Qualified Symbol - Literal - Not Exported",
