@@ -32,7 +32,7 @@ structure GorgeTest = struct
 
   fun unsym s = CST.UnqualifiedSymbol (i s)
   fun qsym m s = CST.QualifiedSymbol (Symbol.mkSymbol (i m, i s))
-  fun escape s = CST.escapedToString (CST.escapeString "line\\nline")
+  fun escape s = CST.escapedToString (CST.escapeString s)
 
   (* Test Suites *)
   local
