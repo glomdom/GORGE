@@ -32,6 +32,7 @@ structure GorgeTest = struct
 
   fun unsym s = CST.UnqualifiedSymbol (i s)
   fun qsym m s = CST.QualifiedSymbol (Symbol.mkSymbol (i m, i s))
+  fun escape s = CST.escapedToString (CST.escapeString "line\\nline")
 
   (* Test Suites *)
   local
@@ -60,7 +61,8 @@ structure GorgeTest = struct
 
       suite "Strings" [
         isParse "\"test\"" (StringConstant (escapeString "test")),
-        isParse "\"test \\\"herp\\\" test\"" (StringConstant (escapeString "test \"herp\" test"))
+        isParse "\"test \\\"herp\\\" test\"" (StringConstant (escapeString "test \"herp\" test")),
+        isEqual' (escape "line\\nline") "line\nline"
       ],
 
       suite "Symbols" [

@@ -9,6 +9,11 @@ structure CST : CST = struct
                | Keyword of Symbol.symbol_name
                | List of cst list
 
-  fun escapeString s = EscapedString s
+  fun escapeString s =
+    EscapedString (String.implode (escapeList (String.explode s)))
+  and escapeList (#"\\" :: #"n" :: rest) = #"\n" :: (escapeList rest)
+    | escapeList (head :: rest) = head :: (escapeList rest)
+    | escapeList nil = nil
+
   fun escapedToString (EscapedString s) = s
 end
