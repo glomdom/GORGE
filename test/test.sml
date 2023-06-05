@@ -62,7 +62,10 @@ structure GorgeTest = struct
       suite "Strings" [
         isParse "\"test\"" (StringConstant (escapeString "test")),
         isParse "\"test \\\"herp\\\" test\"" (StringConstant (escapeString "test \"herp\" test")),
-        isEqual' (escape "line\\nline") "line\nline"
+        isEqual' (escape "line\\nline") "line\nline",
+        isEqual' (escape "line\\rline") "line\rline",
+        isEqual' (escape "line\\tline") "line\tline",
+        isEqual' (escape "line\\\\line") "line\\line"
       ],
 
       suite "Symbols" [
