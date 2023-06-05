@@ -16,6 +16,6 @@ signature MODULE = sig
   val envGet: menv -> module_name -> module option
 
   val resolveNickname: module -> module_name -> module_name
-  val sourceModule: module -> symbol_name -> module_name
+  val sourceModule: menv -> module -> symbol_name -> module_name
   val doesModuleExport: module -> symbol_name -> bool
 end

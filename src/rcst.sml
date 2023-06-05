@@ -6,6 +6,24 @@ structure RCST :> RCST = struct
                 | Keyword of Symbol.symbol_name
                 | List of rcst list
 
+  local
+    open Symbol
+  in
+    fun resolveNicknames _ (CST.IntConstant i) = CST.IntConstant i
+      | resolveNicknames _ (CST.FloatConstant f) = CST.FloatConstant f
+      | resolveNicknames _ (CST.StringConstant s) = CST.StringConstant s
+      | resolveNicknames m (CST.QualifiedSymbol s) = CST.QualifiedSymbol (resolveSymbol s m)
+      | resolveNicknames _ (CST.UnqualifiedSymbol n) = CST.UnqualifiedSymbol n
+      | resolveNicknames _ (CST.Keyword n) = CST.Keyword n
+      | resolveNicknames m (CST.List l) = CST.List (map (resolveNicknames m) l)
+    and resolveSymbol sym module =
+      let val modName = symbolModuleName sym
+
+      in
+        mkSymbol (Module.resolveNickname module modName, symbolName sym)
+      end
+  end
+
   fun innResolve _ _ (CST.IntConstant i) = IntConstant i
     | innResolve _ _ (CST.FloatConstant f) = FloatConstant f
     | innResolve _ _ (CST.StringConstant es) = StringConstant es
@@ -19,11 +37,10 @@ structure RCST :> RCST = struct
     in
       case (Module.envGet menv truename) of
           SOME formod => if Module.doesModuleExport formod sn then Symbol (Symbol.mkSymbol (Module.moduleName formod, sn)) else raise Fail ("module `" ^ (Ident.identString truename) ^ "` does not export symbol `" ^ (Ident.identString sn) ^ "`")
-
         | NONE => raise Fail ("no module name `" ^ (Ident.identString truename) ^ "`")
     end
+  and resolveUnqualified menv m (s: Symbol.symbol_name) = Symbol (Symbol.mkSymbol (Module.sourceModule menv m s, s))
 
-  and resolveUnqualified _ m (s: Symbol.symbol_name) = Symbol (Symbol.mkSymbol (Module.sourceModule m s, s))
-
-  fun resolve menv m e = Util.Result (innResolve menv m e) handle Fail msg => Util.Failure msg
+  fun resolve menv m e =
+    Util.Result (innResolve menv m e) handle Fail msg => Util.Failure msg
 end
