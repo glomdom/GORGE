@@ -138,8 +138,8 @@ structure GorgeTest = struct
   in
     val moduleSuite =
       let val a = Module (i "A", empty, Imports empty, Exports (Set.add Set.empty (i "test")))
-          and b = Module (i "B", iadd empty (i "nick", i "A"), Imports empty, Exports Set.empty)
-          and c = Module (i "C", empty, Imports (iadd empty (i "test", i "A")), Exports Set.empty)
+          and b = Module (i "B", iadd empty (i "nick", i "A"), Imports (iadd empty (i "test", i "A")), Exports (Set.add Set.empty (i "test")))
+          and c = Module (i "C", empty, Imports (iadd empty (i "test", i "B")), Exports Set.empty)
 
       in
         let val menv = addModule (addModule (addModule emptyEnv a) b) c
@@ -152,7 +152,8 @@ structure GorgeTest = struct
 
             suite "Symbol Resolution" [
               isEqual (RCST.resolve menv b (CST.IntConstant "+10")) (Util.Result (RCST.IntConstant "+10")) "Int Constant",
-              isEqual (RCST.resolve menv b (CST.UnqualifiedSymbol (i "test"))) (Util.Result (rqsym "B" "test")) "Unqualified Symbol - Internal",
+              isEqual (RCST.resolve menv b (CST.UnqualifiedSymbol (i "test"))) (Util.Result (rqsym "A" "test")) "Unqualified Symbol - Imported",
+              isEqual (RCST.resolve menv b (CST.UnqualifiedSymbol (i "test2"))) (Util.Result (rqsym "B" "test2")) "Unqualified Symbol - Imported",
               isEqual (RCST.resolve menv b (qsym "nick" "test")) (Util.Result (rqsym "A" "test")) "Qualified Symbol - Nickname - Exported",
               isEqual (RCST.resolve menv b (qsym "A" "test")) (Util.Result (rqsym "A" "test")) "Qualified Symbol - Literal - Not Exported",
               isFailure (RCST.resolve menv b (qsym "nick" "test1")) "Qualified Symbol - Nickname - Not Exported",
@@ -164,9 +165,28 @@ structure GorgeTest = struct
       end
   end
 
+  val astSuite =
+    let val menv = Module.defaultMenv
+
+    in
+      let val module = valOf (Module.envGet menv (Ident.mkIdentEx "gorge"))
+
+      in
+        let fun parse str = Util.valOf (Parser.parseString str)
+            and resolve cst = Util.valOf (RCST.resolve menv module cst)
+
+        in
+          suite "AST" [
+            isEqual (resolve (parse "123")) (RCST.IntConstant "123") "IntConstant 123"
+          ]
+        end
+      end
+    end
+
   val tests = suite "Gorge Tests" [
     parserSuite,
-    moduleSuite
+    moduleSuite,
+    astSuite
   ]
 
   fun runTests () = runAndQuit tests defaultReporter

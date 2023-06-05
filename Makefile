@@ -9,6 +9,8 @@ MLB_FILE := gorge.mlb
 CM_TEST_FILE := gorge-test.cm
 TEST_BIN := gorge-test
 
+BIN = gorge
+
 SRC := src/*.sig src/*.sml
 TEST_SRC := test/*.sml
 
@@ -37,6 +39,9 @@ $(MLUNIT): $(VENDOR_DIR)
 
 compile: $(SRC) $(DEPS)
 	$(SML) $(SMLFLAGS) -m $(CM_FILE)
+
+$(BIN): $(SRC) $(DEPS)
+	$(MLTON) $(MLB_FILE)
 
 $(TEST_BIN): $(SRC) $(TEST_SRC) $(DEPS)
 	$(SML) $(SMLFLAGS) -m $(CM_TEST_FILE)

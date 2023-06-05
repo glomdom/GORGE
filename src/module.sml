@@ -33,4 +33,15 @@ structure Module : MODULE = struct
 
   fun doesModuleExport (m: module) (s: symbol_name) =
     Set.isIn (moduleExports m) s
+
+  val defaultMenv =
+    let val gorgeExports = ["defun", "deftype", "defdatatype", "the"]
+
+    in
+      let val gorgeMod = Module (Ident.mkIdentEx "gorge", Map.empty, Imports Map.empty, Exports (Set.fromList (map Ident.mkIdentEx gorgeExports)))
+
+      in
+        addModule emptyEnv gorgeMod
+      end
+    end
 end

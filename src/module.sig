@@ -18,4 +18,6 @@ signature MODULE = sig
   val resolveNickname: module -> module_name -> module_name
   val sourceModule: menv -> module -> symbol_name -> module_name
   val doesModuleExport: module -> symbol_name -> bool
+
+  val defaultMenv: menv
 end

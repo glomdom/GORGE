@@ -2,6 +2,9 @@ structure Util :> UTIL = struct
   datatype 'a result = Result of 'a
                      | Failure of string
 
+  fun valOf (Result v) = v
+    | valOf (Failure f) = raise Fail ("result.failure: " ^ f)
+
   type path = string
   fun readFileToString filepath =
     let val stream = TextIO.openIn filepath
@@ -9,7 +12,7 @@ structure Util :> UTIL = struct
           case TextIO.inputLine stream of
               SOME line => line :: loop stream
             | NONE => []
-    
+
     in
       String.concat (loop stream before TextIO.closeIn stream)
     end
