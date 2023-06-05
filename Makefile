@@ -45,5 +45,5 @@ $(TEST_BIN): $(SRC) $(TEST_SRC) $(DEPS)
 test: $(TEST_BIN)
 
 clean:
-	rm -rf src/.cm/ $(VENDOR_DIR)
+	rm -rf src/.cm/ test/.cm/ $(VENDOR_DIR)
 	rm -f $(TEST_BIN)
