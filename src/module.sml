@@ -41,7 +41,11 @@ structure Module : MODULE = struct
       let val gorgeMod = Module (Ident.mkIdentEx "gorge", Map.empty, Imports Map.empty, Exports (Set.fromList (map Ident.mkIdentEx gorgeExports)))
 
       in
-        addModule emptyEnv gorgeMod
+        let val gorgeUserMod = Module (Ident.mkIdentEx "gorge-user", Map.empty, Imports (Map.fromList (map (fn n => (Ident.mkIdentEx n, Ident.mkIdentEx "gorge")) gorgeExports)), Exports Set.empty)
+
+        in
+          addModule (addModule emptyEnv gorgeMod) gorgeUserMod
+        end
       end
     end
 end
