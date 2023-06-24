@@ -8,9 +8,25 @@ structure GorgeTest = struct
     ParsimonyStringInput.fromString str
 
   fun isParse input output =
-    is (fn () => case (Parser.parseString input) of
-        (Util.Result v) => if v = output then Pass else Fail "parse sucessful, but not equal to output"
-      | Util.Failure f => Fail f)
+    is (fn () => let val v = Parser.parseString input
+      in
+        if v = output then
+          Pass
+        else
+          Fail "parse successful, but not equal to output"
+      end
+
+      handle _ => Fail "bad parse")
+
+    input
+
+  fun isNotParse input =
+    is (fn () => let val v = Parser.parseString input
+      in
+        Fail "parse successful, should have failed"
+      end
+
+      handle _ => Pass)
 
     input
 
@@ -22,13 +38,6 @@ structure GorgeTest = struct
     msg
 
   val i = Ident.mkIdentEx
-
-  fun isNotParse input =
-    is (fn () => case (Parser.parseString input) of
-        (Util.Result _) => Fail "parse successful, but must fail"
-      | _ => Pass)
-
-    input
 
   fun unsym s = CST.UnqualifiedSymbol (i s)
   fun qsym m s = CST.QualifiedSymbol (Symbol.mkSymbol (i m, i s))
@@ -172,7 +181,7 @@ structure GorgeTest = struct
       let val module = valOf (Module.envGet menv (Ident.mkIdentEx "gorge"))
 
       in
-        let fun parse str = Util.valOf (Parser.parseString str)
+        let fun parse str = Parser.parseString str
             and resolve cst = Util.valOf (RCST.resolve menv module cst)
 
         in

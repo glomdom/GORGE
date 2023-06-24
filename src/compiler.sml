@@ -1,6 +1,6 @@
 structure Compiler :> COMPILER = struct
-  datatype compiler = Compiler of unit
-  val emptyCompiler = Compiler ()
+  datatype compiler = Compiler of Module.menv * Symbol.module_name
+  val emptyCompiler = Compiler (Module.defaultMenv, Ident.mkIdentEx "gorge-user")
 
   type pathname = string
   datatype compilation_unit = FileUnit of pathname

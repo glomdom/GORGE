@@ -76,23 +76,19 @@ structure Parser :> PARSER = struct
   val sexpParser = defineSexpParser listParser
 
   (* Interface *)
-  local
-    open Util
-  in
-    fun parseString s =
-      case (run sexpParser (ParsimonyStringInput.fromString s)) of
-          (Success (r, _)) => Result r
-        | f => Failure ("bad parse: " ^ (explain f))
+  exception ParserException of string
 
-    fun parseFile path =
-      let val code = "(" ^ (readFileToString path) ^ ")"
+  fun parseString s =
+    case (run sexpParser (ParsimonyStringInput.fromString s)) of
+        (Success (r, _)) => r
+      | f => raise ParserException ("bad parse: " ^ (explain f))
 
-      in
-        case (parseString code) of
-            (Result v) => (case v of
-                (CST.List l) => Result l
-              | _ => Failure "compiler error while parsing file")
-          | (Failure f) => Failure f
-      end
-  end
+  fun parseFile path =
+    let val code = "(" ^ (Util.readFileToString path) ^ ")"
+
+    in
+      case (parseString code) of
+          (CST.List l) => l
+        | _ => raise ParserException "failed to parse file"
+    end
 end
