@@ -6,7 +6,7 @@ stupid language that barely even works
 ## Building
 to build:
 1. download [smlnj](https://www.smlnj.org/)
-2. copy repository with `git clone https://github.com/kisado/GORGE.git`
+2. copy repository with `git clone https://github.com/glomdom/GORGE.git`
 3. cd into repository with `cd GORGE`
 4. run `make`
 5. enjoy
