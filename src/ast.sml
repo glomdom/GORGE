@@ -19,7 +19,7 @@ structure AST :> AST = struct
                    | Definstance of name * typespec * docstring * method_def list
                    | Deftype of name * Type.param list * typespec * docstring
                    | Defdisjunction of name * Type.param list * disjunction_case list * docstring
-                   | Defmacro
+                   | Deftemplate of Macro.template
                    | DefineSymbolMacro of name * RCST.rcst * docstring
                    | Defmodule of Module.module
                    | InModule of Symbol.symbol_name
