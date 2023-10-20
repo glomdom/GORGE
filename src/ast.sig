@@ -9,17 +9,20 @@ signature AST = sig
                | Operator of Symbol.symbol * ast list
        and binding = Binding of Symbol.symbol * ast
 
+  type name = Symbol.symbol
   type docstring = string option
-  datatype top_ast = Defun of Symbol.symbol * param list * Type.typespec * docstring * ast
-                   | Defclass
+  datatype top_ast = Defun of name * param list * Type.typespec * docstring * ast
+                   | Defclass of name * Symbol.symbol * docstring * method list
                    | Definstance
-                   | Deftype of Symbol.symbol * Type.param list * Type.typespec * docstring
-                   | Defdisjunction
+                   | Deftype of name * Type.param list * Type.typespec * docstring
+                   | Defdisjunction of name * Type.param list * disjunction_case list * docstring
                    | Defmacro
-                   | DefineSymbolMacro of Symbol.symbol * RCST.rcst * docstring
+                   | DefineSymbolMacro of name * RCST.rcst * docstring
                    | Defmodule of Module.module
                    | InModule of Symbol.symbol_name
-         and param = DefunParam of Symbol.symbol * Type.typespec
+    and param = FuncParam of Symbol.symbol * Type.typespec
+    and method = Method of name * param list * Type.typespec * docstring
+    and disjunction_case = DisjCase of Symbol.symbol * Type.typespec option
 
   val transform: RCST.rcst -> ast
 end
