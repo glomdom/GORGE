@@ -11,18 +11,21 @@ structure AST :> AST = struct
 
   type name = Symbol.symbol
   type docstring = string option
-  datatype top_ast = Defun of name * param list * Type.typespec * docstring * ast
-                   | Defclass of name * Symbol.symbol * docstring * method list
+  type symbol = Symbol.symbol
+  type typespec = Type.typespec
+
+  datatype top_ast = Defun of name * param list * typespec * docstring * ast
+                   | Defclass of name * symbol * docstring * method list
                    | Definstance
-                   | Deftype of name * Type.param list * Type.typespec * docstring
+                   | Deftype of name * Type.param list * typespec * docstring
                    | Defdisjunction of name * Type.param list * disjunction_case list * docstring
                    | Defmacro
                    | DefineSymbolMacro of name * RCST.rcst * docstring
                    | Defmodule of Module.module
                    | InModule of Symbol.symbol_name
-    and param = FuncParam of Symbol.symbol * Type.typespec
-    and method = Method of name * param list * Type.typespec * docstring
-    and disjunction_case = DisjCase of Symbol.symbol * Type.typespec option
+    and param = Param of name * typespec
+    and method = Method of name * param list * typespec * docstring
+    and disjunction_case = DisjCase of name * typespec option
 
   fun gorge name = Symbol.mkSymbol (Ident.mkIdentEx "gorge", Ident.mkIdentEx name)
 
